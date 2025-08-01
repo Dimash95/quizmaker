@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
@@ -14,6 +15,11 @@ import { UpdateResultDto } from './dto/update-result.dto';
 @Controller('result')
 export class ResultController {
   constructor(private readonly resultService: ResultService) {}
+
+  @Get('users/top')
+  getTopUsers(@Query('limit') limit = 10) {
+    return this.resultService.getTopUsers(limit);
+  }
 
   @Post()
   create(@Body() createResultDto: CreateResultDto) {

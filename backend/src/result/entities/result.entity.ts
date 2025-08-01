@@ -1,3 +1,4 @@
+// src/result/entities/result.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -17,6 +18,12 @@ export class Result {
 
   @Column()
   score: number;
+
+  @Column({ nullable: true })
+  correctAnswersCount: number;
+
+  @Column({ nullable: true })
+  wrongAnswersCount: number;
 
   @CreateDateColumn()
   completedAt: Date;

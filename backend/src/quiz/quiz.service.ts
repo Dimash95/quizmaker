@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Quiz } from './entities/quiz.entity';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
@@ -11,6 +11,36 @@ export class QuizService {
     @InjectRepository(Quiz)
     private quizRepository: Repository<Quiz>,
   ) {}
+
+  findByTitle(q: string) {
+    return this.quizRepository.find({
+      where: {
+        title: ILike(`%${q}%`),
+      },
+    });
+  }
+
+  findByTags(tagNames: string[]) {
+    return this.quizRepository
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.tags', 'tag')
+      .where('tag.name IN (:...tagNames)', { tagNames })
+      .getMany();
+  }
+
+  async getAllPaginated(page: number, limit: number) {
+    const [quizzes, total] = await this.quizRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: quizzes,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 
   create(createQuizDto: CreateQuizDto) {
     return this.quizRepository.save(createQuizDto);

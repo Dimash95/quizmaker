@@ -6,7 +6,21 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+
+@Entity()
+export class Tag {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @ManyToMany(() => Quiz, (quiz) => quiz.tags)
+  quizzes: Quiz[];
+}
 
 @Entity()
 export class Quiz {
@@ -19,9 +33,6 @@ export class Quiz {
   @Column({ nullable: true })
   description: string;
 
-  @Column('text', { array: true, default: [] })
-  tags: string[];
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -30,4 +41,8 @@ export class Quiz {
 
   @OneToMany(() => Result, (result) => result.quiz, { cascade: true })
   results: Result[];
+
+  @ManyToMany(() => Tag, (tag) => tag.quizzes, { cascade: true })
+  @JoinTable()
+  tags: Tag[];
 }

@@ -6,7 +6,7 @@ import { QuizModule } from './quiz/quiz.module';
 import { QuestionModule } from './question/question.module';
 import { AnswerOptionModule } from './answer-option/answer-option.module';
 import { ResultModule } from './result/result.module';
-import { Quiz } from './quiz/entities/quiz.entity';
+import { Quiz, Tag } from './quiz/entities/quiz.entity';
 import { Question } from './question/entities/question.entity';
 import { AnswerOption } from './answer-option/entities/answer-option.entity';
 import { Result } from './result/entities/result.entity';
@@ -22,7 +22,7 @@ import { Result } from './result/entities/result.entity';
       database: 'quizmaker',
       autoLoadEntities: true,
       synchronize: true,
-      entities: [Quiz, Question, AnswerOption, Result],
+      entities: [Quiz, Question, AnswerOption, Result, Tag],
     }),
     QuizModule,
     QuestionModule,

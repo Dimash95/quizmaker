@@ -15,6 +15,17 @@ export class ResultService {
     private quizRepo: Repository<Quiz>,
   ) {}
 
+  async getTopUsers(limit = 10) {
+    return this.resultRepo
+      .createQueryBuilder('result')
+      .select('result.userName', 'userName')
+      .addSelect('SUM(result.score)', 'totalScore')
+      .groupBy('result.userName')
+      .orderBy('totalScore', 'DESC')
+      .limit(limit)
+      .getRawMany();
+  }
+
   async create(createResultDto: CreateResultDto): Promise<Result> {
     const quiz = await this.quizRepo.findOne({
       where: { id: createResultDto.quiz.id },
@@ -27,6 +38,8 @@ export class ResultService {
     const result = this.resultRepo.create({
       userName: createResultDto.userName,
       score: createResultDto.score,
+      correctAnswersCount: createResultDto.correctAnswersCount,
+      wrongAnswersCount: createResultDto.wrongAnswersCount,
       quiz,
     });
 
